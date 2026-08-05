@@ -4,6 +4,7 @@ import {asyncHandler} from "../utils/async-handler.js";
 import {ApiError} from "../utils/api-error.js";
 import { emailVerificationMailgenContent, sendEmail } from "../utils/mail.js";
 import crypto from "crypto";
+import jwt from "jsonwebtoken";
 const generateAccessandRefreshTokens = async(userId) =>{
    try {
     const user = await User.findById(userId);
@@ -217,6 +218,47 @@ const resendEmailVerification = asyncHandler(async(req,res)=>{
         new ApiResponse(200,{},"Mail verification resent successfully")
      )
 })
+const refreshAccessToken = asyncHandler(async(req,res)=>{
+    const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken
+
+    if(!incomingRefreshToken)
+    {
+        throw new ApiError(401,"Unauthorized access");
+    }
+    try {
+        const decodedToken = jwt.verify(incomingRefreshToken,process.env.REFRESH_TOKEN_SECRET);
+    const user = await User.findById(decodedToken?._id);
+    if(!user)
+    {
+        throw new ApiError(401,"Invalid refresh token",[]);
+    }
+    if(incomingRefreshToken != user?.refreshToken){
+        throw new ApiError(401,"Refresh token is expired");
+    }
+    const options ={
+        httpOnly : true,
+        secure : true
+    }
+    const {accessToken,refreshToken : newRefreshToken} = await generateAccessandRefreshTokens(user._id);
+    user.refreshToken = newRefreshToken;
+    await user.save()
+    return res
+     .status(200)
+     .cookie("acessToken",accessToken,options)
+     .cookie("refreshToken",newRefreshToken,options)
+     .json(
+        new ApiResponse(
+            200,
+            {accessToken,refreshToken : newRefreshToken},
+            "Access token refreshed"
+        )
+     )
+    } catch (error) {
+        throw new ApiError(401,"Refresh token is expired");
+
+    }
+     
+})
 export {registerUser,loginUser,logoutUser,getCurrentUser
-    ,verifyEmail,resendEmailVerification
+    ,verifyEmail,resendEmailVerification,refreshAccessToken
 };

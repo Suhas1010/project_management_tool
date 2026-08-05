@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { loginUser, logoutUser, registerUser,getCurrentUser,verifyEmail,resendEmailVerification} from "../controllers/auth.controller.js";
+import { loginUser, logoutUser, registerUser,getCurrentUser,verifyEmail,resendEmailVerification,refreshAccessToken} from "../controllers/auth.controller.js";
 import { validate } from "../middlewares/validator.middleware.js";
 import {userRegisterValidator,userLoginValidator} from "../validators/index.validator.js"
 import { verifyJWT } from "../middlewares/auth.middleware.js";
@@ -16,4 +16,12 @@ router.route("/current-user").get(verifyJWT,getCurrentUser);
 router.route("/verify-email/:verificationToken").get(verifyEmail);
 
 router.route("/resend-email-verification").post(verifyJWT,resendEmailVerification);
+
+router.route("/refresh-token").post(verifyJWT,refreshAccessToken);
+
+
+
+
+
 export default router;
+
