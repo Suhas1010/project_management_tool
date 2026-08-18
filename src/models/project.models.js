@@ -1,7 +1,7 @@
 import mongoose,{Schema} from "mongoose";
 import { ref } from "process";
 
-const projectSchema = ({
+const projectSchema = new Schema({
     name :{
         type : String,
         required : true,
