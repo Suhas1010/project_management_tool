@@ -27,9 +27,10 @@ app.get("/",(req,res)=>{
 
 import authRouter from "./routes/auth.routes.js"
 app.use("/api/v1/auth",authRouter);
-app.use("/api/v1/auth",authRouter);
 
 import projectRouter from "./routes/project.routes.js";
 app.use("/api/v1/projects",projectRouter);
 
+import taskRouter from "./routes/task.routes.js";
+app.use("/api/v1/tasks",taskRouter)
 export default app;

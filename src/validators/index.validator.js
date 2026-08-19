@@ -1,5 +1,5 @@
 import { body } from "express-validator";
-import { AvailableUserRole } from "../utils/constants.js";
+import { AvailableUserRole,AvailableTaskStatuses } from "../utils/constants.js";
 
 const userRegisterValidator = ()=>{
     return [
@@ -92,6 +92,58 @@ const addMembersToProjectValidator = ()=>{
     ]
 }
 
+const createTaskValidator = ()=>{
+    return [
+        body("title")
+        .trim()
+        .notEmpty()
+        .withMessage("Title is required"),
+
+        body("status")
+        .optional()
+        .isIn(AvailableTaskStatuses)
+        .withMessage("Invalid task status")
+    ];
+};
+
+const updateTaskValidator = ()=>{
+    return [
+        body("title")
+        .optional()
+        .trim()
+        .notEmpty()
+        .withMessage("Title cannot be empty"),
+
+        body("status")
+        .optional()
+        .isIn(AvailableTaskStatuses)
+        .withMessage("Invalid task status")
+    ];
+};
+
+const createSubTaskValidator = ()=>{
+    return [
+        body("title")
+        .trim()
+        .notEmpty()
+        .withMessage("Title is required")
+    ];
+};
+
+const updateSubTaskValidator = ()=>{
+    return [
+        body("title")
+        .optional()
+        .trim()
+        .notEmpty()
+        .withMessage("Title cannot be empty"),
+
+        body("isCompleted")
+        .optional()
+        .isBoolean()
+        .withMessage("isCompleted must be a boolean")
+    ];
+};
 export {
     userRegisterValidator,
     userLoginValidator,
@@ -100,4 +152,8 @@ export {
     userResetForgotPasswordValidator,
     createProjectValidator,
     addMembersToProjectValidator,
+    createTaskValidator,
+    updateTaskValidator,
+    createSubTaskValidator,
+    updateSubTaskValidator
 };
