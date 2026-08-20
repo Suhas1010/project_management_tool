@@ -144,6 +144,23 @@ const updateSubTaskValidator = ()=>{
         .withMessage("isCompleted must be a boolean")
     ];
 };
+ const createNoteValidator = () => {
+    return [
+        body("content")
+            .trim()
+            .notEmpty()
+            .withMessage("Note content is required")
+    ];
+};
+
+const updateNoteValidator = () => {
+    return [
+        body("content")
+            .trim()
+            .notEmpty()
+            .withMessage("Note content is required")
+    ];
+};
 export {
     userRegisterValidator,
     userLoginValidator,
@@ -155,5 +172,7 @@ export {
     createTaskValidator,
     updateTaskValidator,
     createSubTaskValidator,
-    updateSubTaskValidator
+    updateSubTaskValidator,
+    createNoteValidator,
+    updateNoteValidator
 };

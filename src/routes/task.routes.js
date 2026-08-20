@@ -75,3 +75,5 @@ router
         ]),
         deleteSubTask
  )
+
+ export default router;
